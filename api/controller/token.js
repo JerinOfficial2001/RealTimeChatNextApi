@@ -1,5 +1,5 @@
 import { getUserData } from "./auth";
-const AUTH_API = process.env.NEXT_PUBLIC_API;
+const AUTH_API = process.env.NEXT_PUBLIC_SOCKET_API;
 export const getAlltokens = async () => {
   try {
     const response = await fetch(AUTH_API + "/api/auth/token", {
