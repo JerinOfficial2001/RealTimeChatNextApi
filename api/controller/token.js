@@ -1,8 +1,8 @@
 import { getUserData } from "./auth";
-
+const AUTH_API = process.env.NEXT_PUBLIC_API;
 export const getAlltokens = async () => {
   try {
-    const response = await fetch("/api/auth/token", {
+    const response = await fetch(AUTH_API + "/api/auth/token", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const getAlltokens = async () => {
 };
 export const getTokenID = async () => {
   try {
-    const response = await fetch("/api/auth/tokenID", {
+    const response = await fetch(AUTH_API + "/api/auth/tokenID", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const getTokenID = async () => {
 };
 export const getTokenByID = async (id) => {
   try {
-    const response = await fetch(`/api/auth/token?id=${id}`, {
+    const response = await fetch(`${AUTH_API}/api/auth/token?id=${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export const getTokenByID = async (id) => {
 };
 export const removeTokenID = async (id) => {
   try {
-    const response = await fetch(`/api/auth/tokenID?id=${id}`, {
+    const response = await fetch(`${AUTH_API}/api/auth/tokenID?id=${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-const AUTH_API = process.env.NEXT_PUBLIC_AUTH_API;
+const AUTH_API = process.env.NEXT_PUBLIC_API;
 export const login = async (mobNum, password) => {
   try {
     const response = await fetch(AUTH_API + "/api/auth/login", {

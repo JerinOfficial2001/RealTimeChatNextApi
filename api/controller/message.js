@@ -1,4 +1,4 @@
-const AUTH_API = process.env.NEXT_PUBLIC_AUTH_API;
+const AUTH_API = process.env.NEXT_PUBLIC_API;
 export const getAllMessages = async (chatID) => {
   try {
     const response = await fetch(AUTH_API + "/api/message", {
