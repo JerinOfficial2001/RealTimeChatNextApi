@@ -24,7 +24,7 @@ function useSocket() {
   const [socketIo, setSocketIo] = useState(null);
   useEffect(() => {
     const socket = io(SocketAPI, {
-      path: "/socket",
+      // path: "/socket",
     });
     setSocketIo(socket);
     return () => {
