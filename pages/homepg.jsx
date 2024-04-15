@@ -243,6 +243,7 @@ export default function Homepg() {
     const timeIST12Hrs = `${hours12}:${formattedMinutes} ${period}`;
     return timeIST12Hrs;
   };
+
   const props = {
     chatArray,
     userData,
@@ -258,6 +259,35 @@ export default function Homepg() {
     menuIndex,
     anchorEl,
   };
+  const JersAppThemes = {
+    whatsappDark: {
+      userContainer: "#111b21",
+      header: "#202c33",
+      text: "white",
+      inputBg: "#2a3942",
+      subText: "#ffffff99",
+      chatContainer: "#0b141a",
+    },
+    whatsappLight: {
+      userContainer: "white",
+      header: "#f1efed",
+      text: "black",
+      inputBg: "",
+      subText: "slategray",
+      chatContainer: "#e4ddd9",
+    },
+    JersApp: {
+      // userContainer: "#D9D9D9",
+      header: "#0E0E0E4A",
+      text: "white",
+      inputBg: "",
+      subText: "slategray",
+      chatContainer:
+        "linear-gradient(125.42deg, rgba(9, 9, 9, 0.23) 8.37%, rgba(176, 176, 176, 0.2) 90.72%)",
+    },
+  };
+  const [themeHandler, setthemeHandler] = useState("JersApp");
+  const [JersAppTheme, setJersAppTheme] = useState(JersAppThemes[themeHandler]);
   return (
     <div
       style={{
@@ -277,19 +307,19 @@ export default function Homepg() {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-          background: isDarkMode ? "#111b21" : "white",
+          background: JersAppTheme.userContainer,
         }}
       >
         <Box
           sx={{
-            background: isDarkMode ? "#202c33" : "#f1efed",
+            background: JersAppTheme.header,
             width: "100%",
             padding: 2,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 2,
-            height: "59px",
+            height: "85px",
           }}
         >
           <Box
@@ -300,9 +330,7 @@ export default function Homepg() {
             }}
           >
             <Avatar />
-            <Typography
-              sx={{ color: isDarkMode ? "white" : "black", fontWeight: "bold" }}
-            >
+            <Typography sx={{ color: JersAppTheme.text, fontWeight: "bold" }}>
               {userData?.name}
             </Typography>
           </Box>
@@ -311,7 +339,7 @@ export default function Homepg() {
               localStorage.clear();
               router.push("/");
             }}
-            style={{ color: isDarkMode ? "white" : "black" }}
+            style={{ color: JersAppTheme.text }}
           >
             Logout
           </button>
@@ -340,8 +368,8 @@ export default function Homepg() {
               fullWidth
               placeholder="Search or start a new chat"
               sx={{
-                background: isDarkMode ? "#2a3942" : "",
-                color: isDarkMode ? "white" : "black",
+                background: JersAppTheme.inputBg,
+                color: JersAppTheme.text,
               }}
             />
           </Box>
@@ -413,7 +441,7 @@ export default function Homepg() {
                       {" "}
                       <Typography
                         sx={{
-                          color: isDarkMode ? "white" : "black",
+                          color: JersAppTheme.text,
                           fontWeight: "bold",
                         }}
                       >
@@ -421,7 +449,7 @@ export default function Homepg() {
                       </Typography>
                       <Typography
                         sx={{
-                          color: isDarkMode ? "#ffffff99" : "slategray",
+                          color: JersAppTheme.subText,
 
                           fontSize: "small",
                         }}
@@ -436,117 +464,135 @@ export default function Homepg() {
                     />
                   </Box>
                 </Box>
-                <Divider sx={{ width: "80%", marginRight: 2 }} />
+                <Divider
+                  sx={{ width: "80%", marginRight: 2, borderColor: "#4C4646" }}
+                />
               </Box>
             );
           })}
         </Stack>
       </Box>
-      <Stack
+      <Box
         sx={{
-          height: "100%",
           width: "70%",
           display: "flex",
+          alignItems: "center",
+          height: "99%",
           flexDirection: "column",
-          background: isDarkMode ? "#0b141a" : "#e4ddd9",
         }}
       >
-        <Box
+        <Stack
           sx={{
-            background: isDarkMode ? "#202c33" : "#f1efed",
-            width: "100%",
-            padding: 2,
+            height: "100%",
+            width: "98%",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            gap: 2,
-            height: "59px",
+            flexDirection: "column",
+            backgroundImage: JersAppTheme.chatContainer,
+            marginTop: 2,
+            borderRadius: "30px",
           }}
         >
           <Box
             sx={{
+              background: JersAppTheme.header,
+              width: "100%",
+              padding: 2,
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-start",
+              justifyContent: "space-between",
               flexDirection: "row",
               gap: 2,
+              height: "59px",
+              borderTopLeftRadius: "30px",
+              borderTopRightRadius: "30px",
             }}
           >
-            <Avatar />
-            <Stack>
-              <Typography
-                sx={{
-                  color: isDarkMode ? "white" : "black",
-                  fontWeight: "bold",
-                }}
-              >
-                {getUserNameByID(currentChatPg?.receiver)}
-              </Typography>
-              <Typography
-                sx={{
-                  color: isActive ? "green" : "slategray",
-                  fontWeight: "bold",
-                  fontSize: "small",
-                }}
-              >
-                {isActive ? "Online" : "Offline"}
-              </Typography>
-            </Stack>
-          </Box>
-          <IconButton
-            onClick={() => {
-              setisDarkMode(!isDarkMode);
-            }}
-          >
-            {!isDarkMode ? (
-              <DarkMode sx={{ color: isDarkMode ? "white" : "black" }} />
-            ) : (
-              <LightMode sx={{ color: isDarkMode ? "white" : "black" }} />
-            )}
-          </IconButton>
-        </Box>
-
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <ChatContainer props={props} />
-        </div>
-
-        <Box
-          sx={{
-            background: isDarkMode ? "#202c33" : "#f1efed",
-            width: "100%",
-            padding: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: 63,
-          }}
-        >
-          <form style={{ width: "80%" }} onSubmit={handleSubmit}>
-            <OutlinedInput
-              size="small"
-              placeholder="Message"
-              fullWidth
-              type="text"
-              value={formDatas.msg}
-              name="msg"
-              onChange={handleOnchange}
+            <Box
               sx={{
-                "&:hover .MuiInputBase-root": {
-                  border: "initial !important",
-                },
-                background: isDarkMode ? "#2a3942" : "",
-                color: isDarkMode ? "white" : "black",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                flexDirection: "row",
+                gap: 2,
               }}
-            />
-          </form>
-        </Box>
-      </Stack>
+            >
+              <Avatar />
+              <Stack>
+                <Typography
+                  sx={{
+                    color: JersAppTheme.text,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {getUserNameByID(currentChatPg?.receiver)}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: isActive ? "green" : "slategray",
+                    fontWeight: "bold",
+                    fontSize: "small",
+                  }}
+                >
+                  {isActive ? "Online" : "Offline"}
+                </Typography>
+              </Stack>
+            </Box>
+            <IconButton
+              onClick={() => {
+                setisDarkMode(!isDarkMode);
+              }}
+            >
+              {!isDarkMode ? (
+                <DarkMode sx={{ color: JersAppTheme.text }} />
+              ) : (
+                <LightMode sx={{ color: JersAppTheme.text }} />
+              )}
+            </IconButton>
+          </Box>
+
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <ChatContainer props={props} />
+          </div>
+
+          <Box
+            sx={{
+              background: JersAppTheme.header,
+              width: "100%",
+              padding: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 63,
+              borderBottomLeftRadius: "30px",
+              borderBottomRightRadius: "30px",
+            }}
+          >
+            <form style={{ width: "80%" }} onSubmit={handleSubmit}>
+              <OutlinedInput
+                size="small"
+                placeholder="Message"
+                fullWidth
+                type="text"
+                value={formDatas.msg}
+                name="msg"
+                onChange={handleOnchange}
+                sx={{
+                  "&:hover .MuiInputBase-root": {
+                    border: "initial !important",
+                  },
+                  background: JersAppTheme.inputBg,
+                  color: JersAppTheme.text,
+                }}
+              />
+            </form>
+          </Box>
+        </Stack>
+      </Box>
     </div>
   );
 }

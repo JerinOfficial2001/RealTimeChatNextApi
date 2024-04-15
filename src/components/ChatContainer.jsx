@@ -36,7 +36,7 @@ export default function ChatContainer({ props }) {
             background: "#a5a5a5",
           },
         },
-        height: "570px",
+        height: "550px",
         overflowY: "scroll",
         width: "100%",
         padding: "0 30px",
