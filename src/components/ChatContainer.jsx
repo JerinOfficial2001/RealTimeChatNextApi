@@ -17,6 +17,7 @@ export default function ChatContainer({ props }) {
     isHover,
     menuIndex,
     anchorEl,
+    JersAppTheme,
   } = props;
   return (
     <Grid
@@ -36,13 +37,16 @@ export default function ChatContainer({ props }) {
             background: "#a5a5a5",
           },
         },
-        height: "550px",
-        overflowY: "scroll",
+        "&:hover": {
+          overflowY: "scroll",
+        },
+        height: "600px",
         width: "100%",
         padding: "0 30px",
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-end",
+        overflow: "hidden",
       }}
     >
       {chatArray.map((chat, index) => {
@@ -80,17 +84,18 @@ export default function ChatContainer({ props }) {
                   : "0 10px 10px 10px",
                 color: isDarkMode ? "white" : "black",
 
-                background: isDarkMode
-                  ? isCurrentUser
-                    ? "#005c4b"
-                    : "#202c33"
-                  : isCurrentUser
-                  ? "#dcf8c6"
-                  : "white",
+                background: isCurrentUser
+                  ? JersAppTheme.senderBubbleColor
+                  : "none",
                 padding: 1,
                 display: "flex",
                 gap: 2,
                 flexDirection: "row",
+              }}
+              style={{
+                backgroundImage: isCurrentUser
+                  ? "none"
+                  : JersAppTheme.receiverBubbleColor,
               }}
             >
               <p>{chat.message}</p>

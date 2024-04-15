@@ -1,9 +1,13 @@
-import { getAllUsers } from "@/api/controller/auth";
-import { createChat, getAllChats } from "@/api/controller/chats";
-import { deleteMessage, getAllMessages } from "@/api/controller/message";
+import {
+  createChat,
+  deleteMessageById,
+  getAllChats,
+  getLastMsg,
+  getMessage,
+} from "@/api/controller/chats";
+import { getContactByUserId } from "@/api/controller/contacts";
 import ChatContainer from "@/src/components/ChatContainer";
-import { DarkMode, LightMode } from "@mui/icons-material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { DarkMode, LightMode, Logout } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -47,6 +51,7 @@ export default function Homepg() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuIndex, setmenuIndex] = useState(null);
   const [isActive, setisActive] = useState(false);
+  const [chatName, setchatName] = useState("Name");
   const handleClick = (event, index) => {
     setAnchorEl(event.currentTarget);
     setmenuIndex(index);
@@ -103,9 +108,6 @@ export default function Homepg() {
       };
     }
   }, [socket]);
-  useEffect(() => {
-    // Listen for new messages
-  }, []);
 
   const handleSocket = async () => {
     if (socket) {
@@ -128,9 +130,14 @@ export default function Homepg() {
     }
   };
   const getUsers = (data) => {
-    getAllUsers(data._id).then((res) => {
+    getContactByUserId(data._id).then((res) => {
       if (res) {
         setusers(res);
+        // const contactswitLastMsg = res.map((contact) => {
+        //   return getLastMsg(contact.user_id, contact.ContactDetails._id).then(
+        //     (lastMsg) => ({ lastMsg, ...contact })
+        //   );
+        // });
       }
     });
   };
@@ -169,7 +176,7 @@ export default function Homepg() {
     }
   };
   const handleDeleteMsg = (id, index) => {
-    deleteMessage(id).then((data) => {
+    deleteMessageById(id).then((data) => {
       if (data.status == "ok" && chatID) {
         handleClose(index);
         fetchMsgs(chatID);
@@ -184,7 +191,7 @@ export default function Homepg() {
     }
   };
   const fetchMsgs = (chatID) => {
-    getAllMessages(chatID).then((msg) => {
+    getMessage(chatID).then((msg) => {
       if (msg) {
         setchatArray(msg);
         setMsgLength(msg.map(() => ({ length: msg.length })));
@@ -213,10 +220,11 @@ export default function Homepg() {
           fetchMsgs(chat._id);
         }
       });
+      setchatName(getUserNameByID(data?.receiver));
     }
   };
   const getUserNameByID = (id) => {
-    const res = users.find((user) => user._id === id);
+    const res = users.find((user) => user.ContactDetails._id === id);
     if (res) {
       return res?.name;
     } else {
@@ -243,7 +251,42 @@ export default function Homepg() {
     const timeIST12Hrs = `${hours12}:${formattedMinutes} ${period}`;
     return timeIST12Hrs;
   };
-
+  const JersAppThemes = {
+    whatsappDark: {
+      userContainer: "#111b21",
+      header: "#202c33",
+      text: "white",
+      inputBg: "#2a3942",
+      subText: "#ffffff99",
+      chatContainer: "#0b141a",
+      receiverBubbleColor: "#202c33",
+      senderBubbleColor: "#005c4b",
+    },
+    whatsappLight: {
+      userContainer: "white",
+      header: "#f1efed",
+      text: "black",
+      inputBg: "",
+      subText: "slategray",
+      chatContainer: "#e4ddd9",
+      receiverBubbleColor: "white",
+      senderBubbleColor: "#dcf8c6",
+    },
+    JersApp: {
+      userContainer: "#B8B8B80A",
+      header: "#0E0E0E4A",
+      text: "white",
+      inputBg: "",
+      subText: "slategray",
+      chatContainer:
+        "linear-gradient(125.42deg, rgba(9, 9, 9, 0.23) 8.37%, rgba(176, 176, 176, 0.2) 90.72%)",
+      receiverBubbleColor:
+        "linear-gradient(98.14deg, rgba(75, 76, 237, 0.71) 2.13%, #37B6E9 98.44%)",
+      senderBubbleColor: "#242C3B",
+    },
+  };
+  const [themeHandler, setthemeHandler] = useState("JersApp");
+  const [JersAppTheme, setJersAppTheme] = useState(JersAppThemes[themeHandler]);
   const props = {
     chatArray,
     userData,
@@ -258,36 +301,9 @@ export default function Homepg() {
     isHover,
     menuIndex,
     anchorEl,
+    JersAppTheme,
   };
-  const JersAppThemes = {
-    whatsappDark: {
-      userContainer: "#111b21",
-      header: "#202c33",
-      text: "white",
-      inputBg: "#2a3942",
-      subText: "#ffffff99",
-      chatContainer: "#0b141a",
-    },
-    whatsappLight: {
-      userContainer: "white",
-      header: "#f1efed",
-      text: "black",
-      inputBg: "",
-      subText: "slategray",
-      chatContainer: "#e4ddd9",
-    },
-    JersApp: {
-      // userContainer: "#D9D9D9",
-      header: "#0E0E0E4A",
-      text: "white",
-      inputBg: "",
-      subText: "slategray",
-      chatContainer:
-        "linear-gradient(125.42deg, rgba(9, 9, 9, 0.23) 8.37%, rgba(176, 176, 176, 0.2) 90.72%)",
-    },
-  };
-  const [themeHandler, setthemeHandler] = useState("JersApp");
-  const [JersAppTheme, setJersAppTheme] = useState(JersAppThemes[themeHandler]);
+
   return (
     <div
       style={{
@@ -320,6 +336,7 @@ export default function Homepg() {
             justifyContent: "space-between",
             gap: 2,
             height: "85px",
+            borderRadius: "20px",
           }}
         >
           <Box
@@ -334,15 +351,15 @@ export default function Homepg() {
               {userData?.name}
             </Typography>
           </Box>
-          <button
+          <IconButton
             onClick={() => {
               localStorage.clear();
               router.push("/");
             }}
             style={{ color: JersAppTheme.text }}
           >
-            Logout
-          </button>
+            <Logout />
+          </IconButton>
         </Box>
         <Box
           sx={{
@@ -414,7 +431,10 @@ export default function Homepg() {
               >
                 <Box
                   onClick={() => {
-                    addChat({ sender: userData._id, receiver: elem._id });
+                    addChat({
+                      sender: userData._id,
+                      receiver: elem.ContactDetails._id,
+                    });
                   }}
                   key={index}
                   sx={{
@@ -457,11 +477,13 @@ export default function Homepg() {
                         Msg
                       </Typography>
                     </Stack>
-                    <Chip
-                      color="success"
-                      label={MsgLength[index]?.length}
-                      size="small"
-                    />
+                    {MsgLength[index]?.length > 0 && (
+                      <Chip
+                        color="success"
+                        label={MsgLength[index]?.length}
+                        size="small"
+                      />
+                    )}
                   </Box>
                 </Box>
                 <Divider
@@ -524,7 +546,7 @@ export default function Homepg() {
                     fontWeight: "bold",
                   }}
                 >
-                  {getUserNameByID(currentChatPg?.receiver)}
+                  {chatName}
                 </Typography>
                 <Typography
                   sx={{

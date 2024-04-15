@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 let Chats;
 
-if (mongoose.models && mongoose.models.Chats) {
-  Chats = mongoose.model("WC_Chats");
+if (mongoose.models && mongoose.models.WC_Chats) {
+  Chats = mongoose.models.WC_Chats;
 } else {
   const ChatsSchema = new mongoose.Schema({
     sender: String,
